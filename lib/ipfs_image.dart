@@ -4,7 +4,9 @@ import 'package:flutter/widgets.dart';
 
 // ignore: camel_case_extensions
 extension ImageIPFS on Image {
-  static Image ipfs(String src) {
+  static Image ipfs(String src, {
+    BoxFit? fit,
+  }) {
     final Uri uri = Uri.parse(src);
     final String cid = uri.host;
     final String path = uri.path;
@@ -18,15 +20,16 @@ extension ImageIPFS on Image {
 
     Image fromProvider(int index) {
       return Image.network(
-          providers[index],
-          errorBuilder: index < providers.length - 1
-              ? (_, __, ___) => fromProvider(index+1)
-              : null
+        providers[index],
+        errorBuilder: index < providers.length - 1
+            ? (_, __, ___) => fromProvider(index+1)
+            : null,
+        fit: fit,
       );
     }
 
     if (uri.scheme != 'ipfs') {
-      return Image.network(src);
+      return Image.network(src, fit: fit,);
     } else {
       return fromProvider(0);
     }
